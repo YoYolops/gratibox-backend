@@ -6,7 +6,7 @@ dotenv.config();
 const { Pool } = pg;
 
 const config =
-	process.env.NODE_ENV === "dev"
+	process.env.NODE_ENV === "dev" || process.env.NODE_ENV === "test"
 		? {
 				user: process.env.DB_USER,
 				password: process.env.DB_PASSWORD,

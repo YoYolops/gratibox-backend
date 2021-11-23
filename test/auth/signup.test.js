@@ -1,11 +1,15 @@
 import supertest from "supertest";
-import "../src/setup.js"
-import app from "../src/app.js";
-import { createUser } from "./factories/createUser.js";
-import clearAllTables from "./utils/clearAllTables.js";
-import connection from "../src/database/connection.js";
+import "../../src/setup.js"
+import app from "../../src/app.js";
+import { createUser } from "../factories/createUser.js";
+import clearAllTables from "../utils/clearAllTables.js";
+import connection from "../../src/database/connection.js";
 
-describe("registration tests", () => {
+describe("register tests", () => {
+
+    beforeAll(async () => {
+        await clearAllTables();
+    })
 
     it("response 422 on sending wrong body", async () => {
         const wrongBody = {}
@@ -38,10 +42,9 @@ describe("registration tests", () => {
             .send(body)
         expect(errorResponse.status).toEqual(409)
     })
+})
 
-
-    afterAll(async () => {
-        await clearAllTables();
-        connection.end();
-    })
+afterAll(async () => {
+    await clearAllTables();
+    await connection.end();
 })

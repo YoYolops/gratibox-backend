@@ -19,11 +19,16 @@ export async function login(req, res) {
         const newToken = uuid()
 
         await connection.query(
-            'UPDATE sessions SET is_expired = TRUE WHERE user_id = $1 AND is_expired = FALSE; INSERT INTO sessions (token, user_id) VALUES ($2, $1)',
-            [ user.id, newToken ]
+            'UPDATE sessions SET is_expired = TRUE WHERE user_id = $1 AND is_expired = FALSE;',
+            [ user.id ]
         )
 
-        user.token = token
+        await connection.query(
+            'INSERT INTO sessions (token, user_id) VALUES ($1, $2)',
+            [ newToken, user.id ]
+        )
+
+        user.token = newToken
         return res.status(200).send(user)
     } catch(e) {
         console.error("LOGIN FAILURE")
