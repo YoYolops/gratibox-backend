@@ -20,7 +20,7 @@ export default async function validateToken(req, res, next) {
 			"SELECT * FROM sessions WHERE token = $1 AND is_expired = false;",
 			[token]
 		);
-		console.log(!dbResponse.rows.length)
+
 		if (!dbResponse.rows.length) return res.sendStatus(404);
 	} catch (e) {
 		console.log("FAILURE in validateToken");

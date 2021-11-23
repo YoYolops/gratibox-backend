@@ -44,7 +44,6 @@ export async function getSignatures(req, res) {
     
     try {
         const userId = await connection.query('SELECT user_id FROM sessions WHERE token = $1;', [ token ]);
-
         const signatureData = await connection.query(
             `SELECT deliveries.day, plans.type, signatures.id, signatures.created_at FROM signatures
             JOIN deliveries ON signatures.delivery_id = deliveries.id
@@ -52,16 +51,20 @@ export async function getSignatures(req, res) {
             WHERE signatures.user_id = $1;`,
             [ userId.rows[0].user_id ]
         )
-        const products = await connection.query(
-            'SELECT name FROM products WHERE id IN (SELECT product_id FROM orders WHERE signature_id = $1)',
-            [ signatureData.rows[0].id ]
-        )
+
+        let products;
+        if(signatureData.rows.length) {
+            products = await connection.query(
+                'SELECT name FROM products WHERE id IN (SELECT product_id FROM orders WHERE signature_id = $1)',
+                [ signatureData.rows[0].id ]
+            )
+        }
 
         const responseBody = signatureData.rows.map(sigData => ({
             ...sigData,
             products: products.rows.map(prod => prod.name)
         }))
-        console.log(responseBody)
+
         return res.send(responseBody)
     } catch(e) {
         console.error("GET signature FAILURE")
