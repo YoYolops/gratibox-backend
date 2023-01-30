@@ -10,7 +10,7 @@
     "test": "NODE_ENV=test yarn jest -i --runInBand",
     "dev": "NODE_ENV=dev nodemon ./server.js",
     "start": "node ./server.js",
-    "pop": "NODE_ENV=dev node ./robots/pop.robot.js"
+    "pop": "node ./populate.mjs"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
